@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <script>
+        function printText(text) {
+            document.getElementById('cacatua').innerHTML = text
+        }
+
+        function printErrorText(text) {
+            document.getElementById('cacatua').style.color = 'red';
+            document.getElementById('cacatua').innerHTML = text;
+        }
+
+        async function makeRequest(event) {
+            event.preventDefault();
+
+            try {
+                const formData = new FormData(event.currentTarget);
+
+                const response = await fetch(
+                    "http://cors-tests-other-site:8080/site/api.php",
+                    {
+                        method: "POST",
+                        // Set the FormData instance as the request body
+                        body: formData,
+                        headers: {
+                            "x-app": "demo-app"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`An error has occured: ${response.status}`);
+                }
+
+                let responseContent = await response.json();
+
+                printText(JSON.stringify(responseContent, undefined, 4));
+
+            } catch (e) {
+                printErrorText('error!!!!\n' + e.message)
+                console.error(e);
+            }
+        }
+    </script>
+</head>
+
+<body style="padding: 75px">
+<div>
+    <form onsubmit="makeRequest(event)">
+        <input type="hidden" name="pato" value="cuac"/>
+        <button type="submit">Click para ver que pasa</button>
+    </form>
+
+    <p>
+    <pre id='cacatua'></pre>
+    </p>
+</div>
+</body>

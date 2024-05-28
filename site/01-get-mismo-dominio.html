@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <script>
+        function printText(text) {
+            document.getElementById('cacatua').innerHTML = text
+        }
+
+        function printErrorText(text) {
+            document.getElementById('cacatua').style.color = 'red';
+            document.getElementById('cacatua').innerHTML = text;
+        }
+
+        async function makeRequest() {
+            try {
+                const response = await fetch(
+                    "http://cors-tests-site:8080/site/api.php?gato=miau",
+                    {
+                        headers: {
+                            "x-app": "demo-app"
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(`An error has occured: ${response.status}`);
+                }
+
+                let responseContent = await response.json();
+
+                printText(JSON.stringify(responseContent, undefined, 4));
+
+            } catch (e) {
+                printErrorText('error!!!!\n' + e.message)
+                console.error(e);
+            }
+        }
+    </script>
+</head>
+
+<body style="padding: 75px">
+<div>
+    <button onClick='makeRequest()'>Click para ver que pasa</button>
+
+    <p>
+    <pre id='cacatua'></pre>
+    </p>
+</div>
+</body>
